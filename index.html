@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robert H.C. Seidel | Licensed Electrician & Automation Specialist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-card: #18181b;
+            --accent-electric: #00d4ff;
+            --accent-power: #ff6b35;
+            --accent-green: #22c55e;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-accent: rgba(0,212,255,0.3);
+            --gradient-electric: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            --gradient-power: linear-gradient(135deg, #ff6b35 0%, #ff4444 100%);
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Grid background */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: linear-gradient(to bottom, var(--bg-primary), transparent);
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            letter-spacing: 0.1em;
+            color: var(--accent-electric);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-electric);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 8%;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .hero-tag {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--accent-electric);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards 0.2s;
+        }
+
+        .hero-name {
+            font-family: var(--font-display);
+            font-size: clamp(4rem, 12vw, 10rem);
+            line-height: 0.9;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards 0.4s;
+        }
+
+        .hero-name span {
+            display: block;
+            background: var(--gradient-electric);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-title {
+            font-family: var(--font-body);
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            font-weight: 300;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards 0.6s;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 3rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards 0.8s;
+        }
+
+        .stat {
+            text-align: left;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            color: var(--accent-electric);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.3rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 1.2s;
+        }
+
+        .scroll-indicator span {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--accent-electric), transparent);
+            animation: scrollPulse 2s ease infinite;
+        }
+
+        /* Section Styling */
+        section {
+            padding: 8rem 8%;
+            position: relative;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .section-number {
+            font-family: var(--font-display);
+            font-size: 5rem;
+            color: var(--bg-card);
+            line-height: 1;
+            -webkit-text-stroke: 1px var(--border-subtle);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            letter-spacing: 0.05em;
+        }
+
+        /* About Section */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .about-image {
+            position: relative;
+            aspect-ratio: 3/4;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+        }
+
+        .about-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-electric);
+            opacity: 0.1;
+        }
+
+        .about-image-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        .about-image-placeholder svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .about-content h3 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .about-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        .about-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .badge:hover {
+            border-color: var(--accent-electric);
+            color: var(--accent-electric);
+        }
+
+        .badge.highlight {
+            background: var(--gradient-electric);
+            border: none;
+            color: var(--bg-primary);
+        }
+
+        /* Skills Section */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-category {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .skill-category:hover {
+            border-color: var(--border-accent);
+            transform: translateY(-5px);
+        }
+
+        .skill-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-electric);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .skill-category:hover::before {
+            transform: scaleX(1);
+        }
+
+        .skill-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1.5rem;
+            color: var(--accent-electric);
+        }
+
+        .skill-category h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        .skill-list {
+            list-style: none;
+        }
+
+        .skill-list li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .skill-list li::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent-electric);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+
+        /* Projects Section */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 2rem;
+            position: relative;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent-electric);
+            box-shadow: 0 0 40px rgba(0,212,255,0.1);
+        }
+
+        .project-card.featured {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 3rem;
+        }
+
+        .project-number {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            color: var(--bg-secondary);
+            -webkit-text-stroke: 1px var(--border-subtle);
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .project-card.featured .project-number {
+            font-size: 6rem;
+        }
+
+        .project-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .project-card.featured .project-title {
+            font-size: 2rem;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .project-tag {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            padding: 0.3rem 0.6rem;
+            background: rgba(0,212,255,0.1);
+            color: var(--accent-electric);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .project-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            min-height: 200px;
+            overflow: hidden;
+        }
+
+        .project-visual.project-image {
+            padding: 0;
+        }
+
+        .project-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            min-height: 250px;
+            transition: transform 0.4s ease;
+        }
+
+        .project-card:hover .project-visual img {
+            transform: scale(1.05);
+        }
+
+        .project-visual svg {
+            width: 100px;
+            height: 100px;
+            color: var(--accent-electric);
+            opacity: 0.3;
+        }
+
+        /* Work Ethic Section */
+        .ethics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border-subtle);
+        }
+
+        /* Gallery Section */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            border: 1px solid var(--border-subtle);
+            cursor: pointer;
+        }
+
+        .gallery-item.large {
+            grid-column: span 2;
+            grid-row: span 2;
+            aspect-ratio: auto;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .gallery-item.large {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+        }
+
+        .ethic-item {
+            background: var(--bg-primary);
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .ethic-item:hover {
+            background: var(--bg-card);
+        }
+
+        .ethic-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .ethic-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .ethic-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 10rem 8%;
+            position: relative;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0,212,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+        }
+
+        .cta-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 3rem;
+            background: var(--gradient-electric);
+            color: var(--bg-primary);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-power);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cta-button:hover::before {
+            opacity: 1;
+        }
+
+        .cta-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-button svg {
+            position: relative;
+            z-index: 1;
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover svg {
+            transform: translateX(5px);
+        }
+
+        .contact-info {
+            margin-top: 4rem;
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+        }
+
+        .contact-item {
+            text-align: center;
+        }
+
+        .contact-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-value {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-value a {
+            color: var(--accent-electric);
+            text-decoration: none;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 8%;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-text {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-electric);
+        }
+
+        /* Animations */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 1; transform: scaleY(1); }
+            50% { opacity: 0.5; transform: scaleY(0.8); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-image {
+                max-width: 400px;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-card.featured {
+                grid-column: span 1;
+                grid-template-columns: 1fr;
+            }
+            
+            .ethics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            section {
+                padding: 4rem 5%;
+            }
+            
+            .hero {
+                padding: 0 5%;
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .skills-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .ethics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            footer {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    
+    <nav>
+        <div class="logo">R.SEIDEL</div>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <p class="hero-tag">// Licensed Electrician & Automation Specialist</p>
+            <h1 class="hero-name">
+                ROBERT
+                <span>H.C. SEIDEL</span>
+            </h1>
+            <p class="hero-title">German-trained electrician bringing precision engineering, military discipline, and innovative smart technology expertise to the American market.</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-value">14,500+</div>
+                    <div class="stat-label">Work Hours Since 2020</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">500+</div>
+                    <div class="stat-label">kW Solar Installed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">248+</div>
+                    <div class="stat-label">Miles of Cable Pulled</div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="section-header">
+            <span class="section-number">01</span>
+            <h2 class="section-title">ABOUT ME</h2>
+        </div>
+        <div class="about-grid">
+            <div class="about-image">
+                <div class="about-image-placeholder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>Your Photo Here</span>
+                </div>
+            </div>
+            <div class="about-content">
+                <h3>PRECISION. POWER. RELIABILITY.</h3>
+                <p>I am a self-employed electrician from Germany with more than 14,500 hours of real, hands-on field experience. Since 2020 I have delivered engineering-level craftsmanship across residential, commercial and industrial projects. My work is built on standards where clean work, perfect wiring and absolute reliability are mandatory.</p>
+                <p>I design and execute complete electrical systems, including 18,300 sq ft welding halls with high-load three-phase distribution and advanced smart automation using microcontrollers, sensors and custom power control. Every project is planned, documented and delivered with precision far above industry average.</p>
+                <p>My background as a Non-Commissioned Officer in the German Armed Forces shaped my mindset. I work disciplined, structured and fully mission-oriented. When I take responsibility for a task, it gets completed correctly, safely and without excuses.</p>
+                <p>I am now seeking my next step in the United States. My focus is heavy-duty electrical work, photovoltaic systems, industrial power setups and high-end home or workshop automation. I am already studying the NEC, fully prepared to relocate and ready to grow with a company that values performance, innovation and reliability.</p>
+                <p><strong>If you need someone who takes ownership, solves problems instead of creating them and raises the standard on every job site, I am ready.</strong></p>
+                <div class="about-badges">
+                    <span class="badge highlight">Ready for USA</span>
+                    <span class="badge highlight">Learning NEC</span>
+                    <span class="badge">German Licensed</span>
+                    <span class="badge">Military Veteran</span>
+                    <span class="badge">Business Owner</span>
+                    <span class="badge">14,500+ Hours</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills">
+        <div class="section-header">
+            <span class="section-number">02</span>
+            <h2 class="section-title">EXPERTISE</h2>
+        </div>
+        <div class="skills-container">
+            <div class="skill-category">
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+                <h3>ELECTRICAL & POWER</h3>
+                <ul class="skill-list">
+                    <li>Residential & Commercial Installations</li>
+                    <li>Industrial High-Load Systems (CEE16/32)</li>
+                    <li>Load Calculations & Proper Sizing</li>
+                    <li>Panel Building & Clean Distributions</li>
+                    <li>PV Systems (Design to Commission)</li>
+                    <li>EV Charging / Wallbox + Load Management</li>
+                    <li>Troubleshooting (Short Circuit, Insulation, RCD)</li>
+                    <li>German Standards (VDE/TAB) + Learning NEC</li>
+                </ul>
+            </div>
+            <div class="skill-category">
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="2" y="3" width="20" height="14" rx="2"/>
+                    <path d="M8 21h8M12 17v4"/>
+                </svg>
+                <h3>SMART SYSTEMS & IOT</h3>
+                <ul class="skill-list">
+                    <li>ESP32 Automation & Control Systems</li>
+                    <li>Relay Logic & Sensor Integration</li>
+                    <li>Custom LED Systems & Controllers</li>
+                    <li>Self-Designed High-Power LED Panels</li>
+                    <li>Raspberry Pi Network Solutions</li>
+                    <li>Web-Based Control Interfaces</li>
+                    <li>Temperature Monitoring Systems</li>
+                </ul>
+            </div>
+            <div class="skill-category">
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M2 20h20M5 20V8l7-5 7 5v12"/>
+                    <rect x="9" y="12" width="6" height="8"/>
+                </svg>
+                <h3>CONSTRUCTION & BUILD</h3>
+                <ul class="skill-list">
+                    <li>Complete Interior Renovations</li>
+                    <li>Drywall & Finishing</li>
+                    <li>Doors, Windows & Flooring</li>
+                    <li>Kitchen & Bathroom Remodels</li>
+                    <li>High-Quality Interior Build-Outs</li>
+                    <li>Full House Transformations</li>
+                </ul>
+            </div>
+            <div class="skill-category">
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                <h3>WORK ETHIC</h3>
+                <ul class="skill-list">
+                    <li>50-60 Hour Weeks – My Normal</li>
+                    <li>Fast, Clean, and Safe – Always</li>
+                    <li>No Excuses – Task Gets Done</li>
+                    <li>Zero Drama, Zero Ego</li>
+                    <li>Owner Mindset – I Care Like It's Mine</li>
+                    <li>Full Documentation Standard</li>
+                    <li>Loyal – I Stay When Invested In</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <div class="section-header">
+            <span class="section-number">03</span>
+            <h2 class="section-title">PROJECTS</h2>
+        </div>
+        <div class="projects-grid">
+            <div class="project-card featured">
+                <div>
+                    <span class="project-number">01</span>
+                    <h3 class="project-title">18,300 SQ FT INDUSTRIAL WELDING HALL</h3>
+                    <p class="project-description">Designed and installed the complete electrical system for a full-scale industrial welding facility. The project included a 400A three-phase main distribution, heavy-duty feeder cables up to 600 kcmil (approx. 300 mm²), high-load circuits for welders, compressors and industrial machinery, and multiple CEE16 and CEE32 industrial power outlets, described for U.S. readers as European 230V/400V three-phase industrial connectors similar to NEMA L15-20 and L15-30 systems. Work included structured cable-tray routing, precise load balancing, selective protection coordination and fully documented distribution planning. Delivered to a zero-defect standard with clean, safe and reliable installation.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Industrial</span>
+                        <span class="project-tag">Three Phase</span>
+                        <span class="project-tag">Full System</span>
+                        <span class="project-tag">Heavy Duty</span>
+                    </div>
+                </div>
+                <div class="project-visual project-image">
+                    <img src="images/welding-hall.jpg" alt="18,300 sq ft Industrial Welding Hall">
+                </div>
+            </div>
+            <div class="project-card featured">
+                <div>
+                    <span class="project-number">02</span>
+                    <h3 class="project-title">MULTIPLE COMMERCIAL PV SYSTEMS – OVER 500 kWp</h3>
+                    <p class="project-description">Worked on several large commercial photovoltaic systems with a combined capacity of more than 500 kWp across retail and commercial buildings. Tasks included structural planning, inverter layout, PV string design, cable routing, safety integration and full utility approval.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Commercial</span>
+                        <span class="project-tag">Photovoltaic</span>
+                        <span class="project-tag">High Output</span>
+                    </div>
+                </div>
+                <div class="project-visual project-image">
+                    <img src="images/solar-inverter.jpg" alt="SolaX Power Inverter with Battery Storage">
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-number">03</span>
+                <h3 class="project-title">EV CHARGING STATIONS</h3>
+                <p class="project-description">Installed multiple EV charging units including wallboxes, load management systems, cable routing, breaker sizing and integration with existing electrical installations. Experience with residential and commercial deployments.</p>
+                <div class="project-tags">
+                    <span class="project-tag">EV Charging</span>
+                    <span class="project-tag">Load Management</span>
+                    <span class="project-tag">Installation</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-number">04</span>
+                <h3 class="project-title">19 SINGLE-FAMILY HOMES – FULL ELECTRICAL</h3>
+                <p class="project-description">Completed full electrical installations in 19 single-family homes including panels, subpanels, heating systems, lighting layouts, safety systems, kitchen wiring, outdoor circuits and final commissioning.</p>
+                <div class="project-tags">
+                    <span class="project-tag">Residential</span>
+                    <span class="project-tag">Full Build</span>
+                    <span class="project-tag">High Quality</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-number">05</span>
+                <h3 class="project-title">7 MULTI-FAMILY BUILDINGS – APARTMENTS</h3>
+                <p class="project-description">Executed apartment wiring and building-wide electrical systems in 7 multi-family buildings including distribution layouts, shared systems, stair lighting, communication lines and safety devices.</p>
+                <div class="project-tags">
+                    <span class="project-tag">Multi-Family</span>
+                    <span class="project-tag">Apartments</span>
+                    <span class="project-tag">Structured Wiring</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-number">06</span>
+                <h3 class="project-title">RESTAURANTS – COMMERCIAL BUILD-OUTS</h3>
+                <p class="project-description">Performed complete electrical work for multiple restaurants including commercial kitchen equipment, HVAC integration, lighting design, POS systems, emergency circuits and ventilation control.</p>
+                <div class="project-tags">
+                    <span class="project-tag">Commercial</span>
+                    <span class="project-tag">Hospitality</span>
+                    <span class="project-tag">Heavy Duty</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-number">07</span>
+                <h3 class="project-title">SERVICE, TROUBLESHOOTING & REPAIRS</h3>
+                <p class="project-description">Carried out countless diagnostic and repair operations including short-circuit tracing, overload correction, phase balancing and fast customer service under time pressure.</p>
+                <div class="project-tags">
+                    <span class="project-tag">Troubleshooting</span>
+                    <span class="project-tag">Diagnostics</span>
+                    <span class="project-tag">Customer Service</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-number">08</span>
+                <h3 class="project-title">BUS DOORBELL & COMMUNICATION SYSTEMS</h3>
+                <p class="project-description">Installed and configured multi-wire and two-wire bus intercom systems including power supply design, cabling, distribution, troubleshooting and integration with access control or camera modules.</p>
+                <div class="project-tags">
+                    <span class="project-tag">Intercom</span>
+                    <span class="project-tag">Bus System</span>
+                    <span class="project-tag">Communication</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-number">09</span>
+                <h3 class="project-title">CUSTOM SMART HOME SYSTEMS</h3>
+                <p class="project-description">Developed ESP32-based automation systems for climate control, lighting, energy monitoring and security logic with modern browser interfaces.</p>
+                <div class="project-tags">
+                    <span class="project-tag">ESP32</span>
+                    <span class="project-tag">IoT</span>
+                    <span class="project-tag">Custom Development</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-number">10</span>
+                <h3 class="project-title">14-CHANNEL LED STAIR SYSTEM</h3>
+                <p class="project-description">Built a MOSFET-driven LED stair lighting system with dual motion sensors and ambient light detection for smooth sequential illumination.</p>
+                <div class="project-tags">
+                    <span class="project-tag">LED</span>
+                    <span class="project-tag">MOSFET</span>
+                    <span class="project-tag">Automation</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-number">11</span>
+                <h3 class="project-title">ESP32 CRUISE CONTROL SYSTEM</h3>
+                <p class="project-description">Developed an automotive cruise control prototype using ESP32 and ELM327, analyzing real-time OBD2 data for safe throttle regulation.</p>
+                <div class="project-tags">
+                    <span class="project-tag">Automotive</span>
+                    <span class="project-tag">OBD2</span>
+                    <span class="project-tag">R&D</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-number">12</span>
+                <h3 class="project-title">INDUSTRIAL TEMP CONTROL UNIT</h3>
+                <p class="project-description">Designed an NTC-based temperature monitoring and relay control system for industrial heating with safety interlocks and web-based remote monitoring.</p>
+                <div class="project-tags">
+                    <span class="project-tag">Industrial</span>
+                    <span class="project-tag">Safety</span>
+                    <span class="project-tag">Web Control</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery">
+        <div class="section-header">
+            <span class="section-number">04</span>
+            <h2 class="section-title">WORK GALLERY</h2>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item large">
+                <img src="images/welding-hall.jpg" alt="18,300 sq ft Industrial Welding Hall">
+                <div class="gallery-caption">18,300 sq ft Industrial Welding Hall</div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/main-disconnect.jpg" alt="400A Main Disconnect Switch">
+                <div class="gallery-caption">400A Socomec SIRCO Main Disconnect</div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/solar-inverter.jpg" alt="SolaX Power Inverter with Battery Storage">
+                <div class="gallery-caption">SolaX Inverter + Battery Storage System</div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/ev-charger.jpg" alt="Huawei EV Wallbox Installation">
+                <div class="gallery-caption">Huawei EV Wallbox Installation</div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/network-rack.jpg" alt="Structured Network Rack">
+                <div class="gallery-caption">Structured Network & Communication Rack</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <span class="section-number">05</span>
+            <h2 class="section-title">WHY ME</h2>
+        </div>
+        <div class="ethics-grid">
+            <div class="ethic-item">
+                <div class="ethic-icon">⚡</div>
+                <h4 class="ethic-title">EXPERIENCE</h4>
+                <p class="ethic-desc">Over 14,500 hours of real, hands-on electrical work in residential, commercial and industrial environments.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">✓</div>
+                <h4 class="ethic-title">QUALITY FOCUS</h4>
+                <p class="ethic-desc">My work is consistently clean, safe and precise, because I treat every installation like it has to run flawlessly for the next 30 years.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">🎖️</div>
+                <h4 class="ethic-title">LEADERSHIP</h4>
+                <p class="ethic-desc">My military NCO background ensures discipline, structure and reliable decision-making on every job.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">📐</div>
+                <h4 class="ethic-title">SYSTEM DESIGN</h4>
+                <p class="ethic-desc">I can plan, build and commission full electrical systems from the first layout to the final test.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">💡</div>
+                <h4 class="ethic-title">INNOVATION</h4>
+                <p class="ethic-desc">I develop smart automation and custom IoT solutions that solve problems no standard product can fix.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">💪</div>
+                <h4 class="ethic-title">HARD WORKER</h4>
+                <p class="ethic-desc">I put in full effort every single day, stay focused under pressure and get the job done no matter how challenging it is.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">🎯</div>
+                <h4 class="ethic-title">WORK ETHIC</h4>
+                <p class="ethic-desc">When I start a task, I own it completely until it is finished safely, correctly and on time.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">🚀</div>
+                <h4 class="ethic-title">COMMITMENT</h4>
+                <p class="ethic-desc">I am ready for immediate relocation and long-term loyalty to the company that invests in me.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <span class="section-number">06</span>
+            <h2 class="section-title">WHAT I SEEK IN AN EMPLOYER</h2>
+        </div>
+        <div class="ethics-grid">
+            <div class="ethic-item">
+                <div class="ethic-icon">📈</div>
+                <h4 class="ethic-title">PROFESSIONAL GROWTH</h4>
+                <p class="ethic-desc">A company that supports my path to Journeyman and later Master Electrician.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">🤝</div>
+                <h4 class="ethic-title">LONG-TERM POSITION</h4>
+                <p class="ethic-desc">A stable role where I can commit for years and grow with the team.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">🔧</div>
+                <h4 class="ethic-title">CHALLENGING PROJECTS</h4>
+                <p class="ethic-desc">Work in residential, commercial or industrial environments that pushes my skills forward.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">👥</div>
+                <h4 class="ethic-title">STRONG TEAM CULTURE</h4>
+                <p class="ethic-desc">A reliable team that values communication, respect and clean, safe work.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">⭐</div>
+                <h4 class="ethic-title">HIGH STANDARDS</h4>
+                <p class="ethic-desc">An employer who appreciates precision, quality and responsibility on every job site.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">📋</div>
+                <h4 class="ethic-title">SPONSORSHIP SUPPORT</h4>
+                <p class="ethic-desc">A company willing to sponsor my U.S. work authorization and help me relocate successfully.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">✅</div>
+                <h4 class="ethic-title">CLEAR RESPONSIBILITY</h4>
+                <p class="ethic-desc">Structured tasks and the ability to take ownership of important work.</p>
+            </div>
+            <div class="ethic-item">
+                <div class="ethic-icon">🧠</div>
+                <h4 class="ethic-title">INNOVATION-FRIENDLY</h4>
+                <p class="ethic-desc">A place where smart solutions, automation and new ideas are welcome.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="cta-section">
+        <h2 class="cta-title">IF YOU WANT FAST, RELIABLE AND BUILT-LIKE-A-TANK ELECTRICAL WORK, I'M YOUR MAN.</h2>
+        <p class="cta-subtitle">German discipline meets U.S. innovation. I deliver clean installs, smart solutions and job-site performance you can count on every single day.</p>
+        <a href="mailto:jobwithrobert.electric@gmail.com" class="cta-button">
+            <span>Get In Touch</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </a>
+        <div class="contact-info">
+            <div class="contact-item">
+                <p class="contact-label">Email</p>
+                <p class="contact-value"><a href="mailto:jobwithrobert.electric@gmail.com">jobwithrobert.electric@gmail.com</a></p>
+            </div>
+            <div class="contact-item">
+                <p class="contact-label">Location</p>
+                <p class="contact-value">Germany → Ready for USA</p>
+            </div>
+            <div class="contact-item">
+                <p class="contact-label">Availability</p>
+                <p class="contact-value">Immediate</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p class="footer-text">© 2025 Robert H.C. Seidel. Crafted with German precision.</p>
+        <div class="footer-links">
+            <a href="https://www.linkedin.com/in/robert-seidel-3b38991a0/" target="_blank">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Animate sections on scroll
+        document.querySelectorAll('section:not(.hero)').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'all 0.8s ease';
+            observer.observe(section);
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Parallax effect for hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero-content');
+            if (hero && scrolled < window.innerHeight) {
+                hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+                hero.style.opacity = 1 - (scrolled / window.innerHeight);
+            }
+        });
+    </script>
+</body>
+</html>
